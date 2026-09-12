@@ -1,10 +1,33 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+
 [project]
 name = "dba-nexus-ai"
 version = "0.1.0"
-description = "Add your description here"
+description = "Evidence-driven multi-database RCA platform"
 readme = "README.md"
 requires-python = ">=3.12"
+
 dependencies = [
     "fastapi>=0.141.1",
     "uvicorn[standard]>=0.52.4",
+]
+
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+
+[tool.setuptools]
+packages = [
+    "app",
+    "app.models",
+    "app.playbooks",
+    "app.services",
+    "app.collectors",
+    "app.core",
 ]

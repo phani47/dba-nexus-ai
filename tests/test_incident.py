@@ -15,9 +15,19 @@ def test_create_oracle_incident():
         message="Unable to allocate bytes of shared memory",
     )
 
-    print("\n--- INCIDENT ---")
-    print(incident.model_dump_json(indent=2))
+    assert incident.incident_id == "INC-001"
+    assert incident.database_name == "PRODDB"
+    assert incident.database_type == DatabaseType.ORACLE
+    assert incident.error_code == "ORA-04031"
+    assert incident.severity == Severity.HIGH
 
 
-if __name__ == "__main__":
-    test_create_oracle_incident()
+def test_incident_default_severity():
+    incident = Incident(
+        incident_id="INC-002",
+        database_name="TESTDB",
+        database_type=DatabaseType.POSTGRESQL,
+        error_code="CONNECTION_ERROR",
+    )
+
+    assert incident.severity == Severity.HIGH
