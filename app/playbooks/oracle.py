@@ -1,3 +1,8 @@
+from app.models.evidence import EvidenceSource
+from app.models.evidence_requirement import (
+    EvidencePriority,
+    EvidenceRequirement,
+)
 from app.models.incident import DatabaseType, Severity
 from app.models.playbook import (
     Hypothesis,
@@ -8,6 +13,7 @@ from app.models.playbook import (
 
 ORA_04031_PLAYBOOK = Playbook(
     playbook_id="oracle-ora-04031",
+
     name="ORA-04031 Shared Memory Investigation",
 
     database_type=DatabaseType.ORACLE,
@@ -29,6 +35,78 @@ ORA_04031_PLAYBOOK = Playbook(
         "Shared Pool Summary",
         "ORA-04031 Error Details",
         "OS Memory Summary",
+    ],
+
+    evidence_requirements=[
+        EvidenceRequirement(
+            evidence_type="shared_pool_summary",
+            source=EvidenceSource.DATABASE,
+            priority=EvidencePriority.CRITICAL,
+            description=(
+                "Collect shared pool usage, free memory, "
+                "and allocation failure information."
+            ),
+            reason=(
+                "Determine whether shared pool exhaustion "
+                "or memory pressure caused ORA-04031."
+            ),
+        ),
+
+        EvidenceRequirement(
+            evidence_type="memory_configuration",
+            source=EvidenceSource.DATABASE,
+            priority=EvidencePriority.HIGH,
+            description=(
+                "Collect SGA, shared pool, and memory "
+                "configuration parameters."
+            ),
+            reason=(
+                "Determine whether memory configuration "
+                "contributed to the allocation failure."
+            ),
+        ),
+
+        EvidenceRequirement(
+            evidence_type="os_memory_summary",
+            source=EvidenceSource.OS,
+            priority=EvidencePriority.HIGH,
+            description=(
+                "Collect host memory usage, available memory, "
+                "and swap activity."
+            ),
+            reason=(
+                "Determine whether operating system memory "
+                "pressure contributed to the incident."
+            ),
+        ),
+
+        EvidenceRequirement(
+            evidence_type="sql_parse_metrics",
+            source=EvidenceSource.DATABASE,
+            priority=EvidencePriority.HIGH,
+            description=(
+                "Collect hard parse activity, library cache "
+                "statistics, and parse-related metrics."
+            ),
+            reason=(
+                "Determine whether excessive hard parsing "
+                "is creating shared pool pressure."
+            ),
+        ),
+
+        EvidenceRequirement(
+            evidence_type="error_timeline",
+            source=EvidenceSource.LOG,
+            priority=EvidencePriority.MEDIUM,
+            description=(
+                "Collect ORA-04031 events and related errors "
+                "around the incident timestamp."
+            ),
+            reason=(
+                "Identify related database events and establish "
+                "an incident timeline."
+            ),
+        ),
     ],
 
     hypotheses=[
